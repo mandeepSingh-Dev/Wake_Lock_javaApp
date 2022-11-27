@@ -5,7 +5,13 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 
 class AlarmService : Service() {
 
@@ -19,8 +25,20 @@ class AlarmService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(notifID, buildRingNotification()!!, ServiceInfo.FOREGROUND_SERVICE_TYPE_NONE)
+
+            CoroutineScope(Dispatchers.Main).launch {
+                SingletonClass.trigger.collect { trigger ->
+                if(trigger) {
+                    stopForeground(true)
+                    SingletonClass._trigger.value = false
+                }else{
+                    Toast.makeText(this@AlarmService,"_Trigger is false",Toast.LENGTH_SHORT).show()
+                }
+                }
+            }
         } else {
             startForeground(notifID, buildRingNotification())
         }
@@ -43,12 +61,25 @@ class AlarmService : Service() {
 
         val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, Integer.toString(NOTIF_CHANNEL_ID_ALARM))
             .setContentTitle(resources.getString(R.string.app_name))
-            .setPriority(NotificationCompat.PRIORITY_MAX)
+          //  .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setSmallIcon(R.drawable.ic_launcher_background)
-         //   .setContentIntent(fullScreenPendingIntent)
+            .setContentIntent(fullScreenPendingIntent)
             .setOnlyAlertOnce(true)
-            .setFullScreenIntent(fullScreenPendingIntent, true)
+            .setFullScreenIntent(fullScreenPendingIntent, true) /** ! this FullScreenIntent will not work if any another app is working as PIP(Background) mode otherwise we have to enable background mode of app from Battery optimization settings  */
+
+        /**Check condition here if screen is On then just start Alert Activity else use this setFullScreenIntent here*/
+        val powerManager = this.getSystemService(POWER_SERVICE) as PowerManager
+        if (powerManager.isInteractive()) {
+            startActivity(
+                Intent(
+                    this,
+                    AlertActivity::class.java
+                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        }
+
+
 
         return builder.build()
     }
@@ -114,7 +145,20 @@ class AlarmService : Service() {
         return START_STICKY
     }
 */
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+    //stopForeground(true)
+   // stopSelf()
 
+}
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopForeground(true)
+        stopSelf()
+
+    }
 
     override fun onBind(intent: Intent?): IBinder? {
         return null

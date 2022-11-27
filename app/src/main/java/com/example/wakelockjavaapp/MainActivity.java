@@ -19,6 +19,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -35,6 +36,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import java.io.Serializable;
+import java.net.URLEncoder;
 
 import kotlinx.coroutines.Delay;
 
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("QueryPermissionsNeeded")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
       //  turnScreenOn();
         setContentView(R.layout.activity_main);
+
+
 
         //getSupportFragmentManager().beginTransaction().replace(R.id.fragment, new BlankFragment()).commit();
 
@@ -122,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
      //   broadcastIntent.putExtra("alarm", (Parcelable) this);
 
       //  PendingIntent pendingIntent = PendingIntent.getForegroundService(this,79,serviceintent,PendingIntent.FLAG_UPDATE_CURRENT);
+
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0,broadcastIntent,0);
 

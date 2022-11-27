@@ -1,5 +1,6 @@
 package com.example.wakelockjavaapp;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
 import static android.content.Context.POWER_SERVICE;
 
 import android.annotation.SuppressLint;
@@ -36,6 +37,7 @@ import java.util.Objects;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MyReceiver2 extends BroadcastReceiver {
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -45,7 +47,6 @@ public class MyReceiver2 extends BroadcastReceiver {
         wakeLock.acquire(60000);
 
         Intent intent1 = new Intent(context, AlarmService.class);
-
         ContextCompat.startForegroundService(context, intent1);
 
     }
