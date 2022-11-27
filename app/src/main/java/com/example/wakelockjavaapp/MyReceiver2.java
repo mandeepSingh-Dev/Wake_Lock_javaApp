@@ -46,6 +46,7 @@ public class MyReceiver2 extends BroadcastReceiver {
                 "com.example.wakelockjavaapp::AlarmSericeTag");
         wakeLock.acquire(60000);
 
+
         Intent intent1 = new Intent(context, AlarmService.class);
         ContextCompat.startForegroundService(context, intent1);
 

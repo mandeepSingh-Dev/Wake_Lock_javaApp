@@ -29,6 +29,7 @@ class AlarmService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(notifID, buildRingNotification()!!, ServiceInfo.FOREGROUND_SERVICE_TYPE_NONE)
 
+
             CoroutineScope(Dispatchers.Main).launch {
                 SingletonClass.trigger.collect { trigger ->
                 if(trigger) {

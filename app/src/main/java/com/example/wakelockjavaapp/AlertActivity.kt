@@ -32,6 +32,7 @@ Toast.makeText(this,"  ALERT  ",Toast.LENGTH_SHORT).show()
                     WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
         )
 
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setTurnScreenOn(true)
             setShowWhenLocked(true)

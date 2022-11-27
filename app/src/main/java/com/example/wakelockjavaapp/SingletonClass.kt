@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 object SingletonClass {
 
+
     val _trigger = MutableStateFlow(false)
     val trigger : StateFlow<Boolean> = _trigger
 }
