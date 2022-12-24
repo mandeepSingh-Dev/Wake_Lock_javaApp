@@ -29,14 +29,13 @@ class AlarmService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(notifID, buildRingNotification()!!, ServiceInfo.FOREGROUND_SERVICE_TYPE_NONE)
 
-
-            CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 SingletonClass.trigger.collect { trigger ->
                 if(trigger) {
                     stopForeground(true)
                     SingletonClass._trigger.value = false
                 }else{
-                    Toast.makeText(this@AlarmService,"_Trigger is false",Toast.LENGTH_SHORT).show()
+                  //  Toast.makeText(this@AlarmService,"_Trigger is false",Toast.LENGTH_SHORT).show()
                 }
                 }
             }
@@ -72,12 +71,9 @@ class AlarmService : Service() {
         /**Check condition here if screen is On then just start Alert Activity else use this setFullScreenIntent here*/
         val powerManager = this.getSystemService(POWER_SERVICE) as PowerManager
         if (powerManager.isInteractive()) {
-            startActivity(
-                Intent(
-                    this,
-                    AlertActivity::class.java
-                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            )
+            startActivity(Intent(this, AlertActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        }else{
+
         }
 
 

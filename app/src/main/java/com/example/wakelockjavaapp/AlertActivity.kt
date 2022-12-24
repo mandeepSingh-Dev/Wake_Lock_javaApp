@@ -21,18 +21,16 @@ import java.net.URLEncoder
 class AlertActivity : AppCompatActivity() {
 
     val mainDispather = Dispatchers.Main
-    lateinit var binding:ActivityAlertBinding
+   // lateinit var binding:ActivityAlertBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-Toast.makeText(this,"  ALERT  ",Toast.LENGTH_SHORT).show()
+        Toast.makeText(this,"  ALERT  ",Toast.LENGTH_SHORT).show()
         window.addFlags(
             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or
                     WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
                     WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
                     WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
         )
-
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setTurnScreenOn(true)
             setShowWhenLocked(true)
@@ -40,8 +38,9 @@ Toast.makeText(this,"  ALERT  ",Toast.LENGTH_SHORT).show()
         }
         /** This 'super.onCreate' , 'Binding Inflate' & 'setContetnView()' should be below setTurnedScrfeenOn and setShowWhenLocked */
         super.onCreate(savedInstanceState)
-        binding = ActivityAlertBinding.inflate(LayoutInflater.from(this))
-        setContentView(binding.root)
+      //  binding = ActivityAlertBinding.inflate(LayoutInflater.from(this))
+        setContentView(R.layout.activity_alert)
+/*
 
         binding.textVirew.setOnClickListener {
             SingletonClass._trigger.value = true
@@ -75,6 +74,7 @@ Toast.makeText(this,"  ALERT  ",Toast.LENGTH_SHORT).show()
 
 
 
+*/
 
     }
 

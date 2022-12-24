@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/mandeep singh/AndroidStudioProjects/Alarm_Application/app/src/main/res/drawable/empty_tall_divider.xml" value="0.1555" />
         <entry key="..\:/Users/mandeep singh/AndroidStudioProjects/Alarm_Application/app/src/main/res/layout/activity_alert.xml" value="0.24947916666666667" />
+        <entry key="..\:/Users/mandeep singh/AndroidStudioProjects/Alarm_Application/app/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="..\:/Users/mandeep singh/AndroidStudioProjects/Alarm_Application/app/src/main/res/layout/activity_main2.xml" value="0.23802083333333332" />
         <entry key="..\:/Users/mandeep singh/AppData/Local/Android/Sdk/platforms/android-33/data/res/layout/auto_complete_list.xml" value="0.23802083333333332" />
       </map>

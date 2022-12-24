@@ -15,11 +15,17 @@ import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.icu.text.TimeZoneFormat;
+import android.icu.text.TimeZoneNames;
+import android.icu.util.Calendar;
+import android.icu.util.TimeZone;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -30,10 +36,17 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
+import android.util.TimeUtils;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.example.wakelockjavaapp.databinding.ActivityMainBinding;
 
 import java.io.Serializable;
 import java.net.URLEncoder;
@@ -41,6 +54,10 @@ import java.net.URLEncoder;
 import kotlinx.coroutines.Delay;
 
 public class MainActivity extends AppCompatActivity {
+
+    private ActivityMainBinding binding = null;
+
+    Context context = this;
 
     @Override
     public void onAttachedToWindow() {
@@ -59,41 +76,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-      //  turnScreenOn();
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
 
-
-
-        //getSupportFragmentManager().beginTransaction().replace(R.id.fragment, new BlankFragment()).commit();
-
-
-      /*  PowerManager powerManager1 = (PowerManager) getSystemService(POWER_SERVICE);
-      @SuppressLint("InvalidWakeLockTag")
-      PowerManager.WakeLock wakeLock =  powerManager1.newWakeLock(PowerManager.FULL_WAKE_LOCK |
-                PowerManager.ACQUIRE_CAUSES_WAKEUP |
-                PowerManager.ON_AFTER_RELEASE, "WakeLock");
-        wakeLock.acquire( *//*10 minutes*//*);*/
-
-
-
-       // checkBatteryOptimization();
+        setContentView(binding.getRoot());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-
             setShowWhenLocked(true);
             setTurnScreenOn(true);
-
-
-           /* KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-
-
-            keyguardManager.requestDismissKeyguard(this, new KeyguardManager.KeyguardDismissCallback() {
-                @Override
-                public void onDismissSucceeded() {
-                    super.onDismissSucceeded();
-                    Toast.makeText(getApplicationContext(),"Succedd", Toast.LENGTH_SHORT).show();
-                }
-            });*/
         }
         else {
 
@@ -104,44 +93,51 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+
         AlarmManager alarmManager = (AlarmManager ) getSystemService(ALARM_SERVICE);
-        /*Intent i = new Intent(this, MyReceiver2.class);
-        i.setAction("ALARM_MY");
 
-       PendingIntent pendingIntent = PendingIntent.getBroadcast(this,100,i,PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-           // alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+(5*1000L) ,pendingIntent);
-       // alarmManager.setInexactRepeating();
-        }else{
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
-        }*/
-
-
-        Intent serviceintent = new Intent(this,AlarmService.class);
+      //  Intent serviceintent = new Intent(this,AlarmService.class);
 
         Intent broadcastIntent = new Intent(this, MyReceiver2.class);
-        //broadcastIntent.putExtra("activity",(Serializable) this);
-     //   broadcastIntent.putExtra("alarm", (Parcelable) this);
-
-      //  PendingIntent pendingIntent = PendingIntent.getForegroundService(this,79,serviceintent,PendingIntent.FLAG_UPDATE_CURRENT);
-
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0,broadcastIntent,0);
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
+        binding.alarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+
+              TimePickerDialog timePickerDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                        calendar.setTimeInMillis(System.currentTimeMillis());
+                        calendar.set(Calendar.HOUR,timePicker.getHour());
+                        calendar.set(Calendar.MINUTE,timePicker.getMinute());
+                        calendar.set(Calendar.SECOND,0);
+                    }
+                },calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(context));
+
+              timePickerDialog.show();
+
+              timePickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                  @Override
+                  public void onDismiss(DialogInterface dialogInterface) {
+                      Log.d("ikfndfd",String.valueOf(calendar.getTimeInMillis()));
+                      Log.d("ikfndfd",String.valueOf(System.currentTimeMillis()));
+
+                      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                          alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),pendingIntent);
+                      } else {}
+                  }
+              });
 
 
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5 * 1000L, pendingIntent);
+            }
+        });
 
-            // alarmManager.setInexactRepeating();
-        } else {
-          //  alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pendingIntent);
-        }
+
 
     }
 
